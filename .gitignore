@@ -1,1 +1,8 @@
-/dist/default/
+# Netbeans files and dirs
+dist/
+build/
+nbproject/
+Makefile
+
+# Simulation dir
+proteus/

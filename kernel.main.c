@@ -19,17 +19,19 @@ void configure_kernel()
 
 void task_create(TASK_P routine, unsigned id, unsigned priority)
 {
+    unsigned short long routine_pointer_handler = (unsigned short long) routine;
+    
     run_queue.task_list[run_queue.installed_tasks].tid      = id;
     run_queue.task_list[run_queue.installed_tasks].state    = RUNNING;
     run_queue.task_list[run_queue.installed_tasks].routine  = routine;
     run_queue.task_list[run_queue.installed_tasks].priority = priority;
     
-    run_queue.task_list[run_queue.installed_tasks].context.stack[0].tosu
-            = (byte)((int)routine);
-    run_queue.task_list[run_queue.installed_tasks].context.stack[0].tosh
-            = (byte)((int)routine >> 8);
     run_queue.task_list[run_queue.installed_tasks].context.stack[0].tosl
-            = (byte)((int)routine >> 8) >> 8;
+            = (byte)(routine_pointer_handler);
+    run_queue.task_list[run_queue.installed_tasks].context.stack[0].tosh
+            = (byte)(routine_pointer_handler >> 8);
+    run_queue.task_list[run_queue.installed_tasks].context.stack[0].tosu
+            = (byte)(routine_pointer_handler >> 16);
     run_queue.task_list[run_queue.installed_tasks].context.stack_size = 1;
             
     run_queue.installed_tasks++;
