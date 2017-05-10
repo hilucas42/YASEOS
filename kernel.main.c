@@ -57,9 +57,9 @@ void task_create(TASK_P routine, unsigned id, unsigned priority)
     {                                   \
         asm("PUSH");                    \
         current_task_stk_size--;        \
-        current_task.context.stack[current_task_stk_size].tosu = TOSU;         \
-        current_task.context.stack[current_task_stk_size].tosh = TOSH;         \
-        current_task.context.stack[current_task_stk_size].tosl = TOSL;         \
+        TOSL = current_task.context.stack[current_task_stk_size].tosl;         \        
+        TOSH = current_task.context.stack[current_task_stk_size].tosh;         \
+        TOSU = current_task.context.stack[current_task_stk_size].tosu;         \
     }                                           \
     current_task.context.bsr_r      = BSR;      \
     current_task.context.status_r   = STATUS;   \
