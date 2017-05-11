@@ -17,8 +17,8 @@ _list_index round_robin_sc()
     
     do
     {
-        next_task = (run_queue.task_running)%run_queue.installed_tasks;
-    } while(run_queue.task_list[next_task].state == RUNNING);
+        next_task = (run_queue.task_running + 1) % run_queue.installed_tasks;
+    } while(run_queue.task_list[next_task].state != RUNNING);
     
     return next_task;
 }

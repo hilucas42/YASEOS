@@ -56,6 +56,7 @@ void configure_hardware()
     configure_timer1();
     
 #ifdef RR
+    INTCONbits.PEIE = 1;    // Habilita interrupcoes por perifericos (ie Timer3)
     configure_timer3();
     reset_timer3();
 #endif
@@ -71,7 +72,7 @@ void configure_hardware()
 void interrupt high_vector()
 {
 #ifdef RR
-    if(INTCONbits.TMR0IF == 1)
+    if(PIR2bits.TMR3IF)
     {
         reset_timer3();
         dispatcher();

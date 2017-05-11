@@ -57,7 +57,7 @@ void task_create(TASK_P routine, unsigned id, unsigned priority)
     {                                   \
         asm("PUSH");                    \
         current_task_stk_size--;        \
-        TOSL = current_task.context.stack[current_task_stk_size].tosl;         \        
+        TOSL = current_task.context.stack[current_task_stk_size].tosl;         \
         TOSH = current_task.context.stack[current_task_stk_size].tosh;         \
         TOSU = current_task.context.stack[current_task_stk_size].tosu;         \
     }                                           \
@@ -76,7 +76,7 @@ void start_scheduling()
 
 void dispatcher()
 {
-    _list_index task_running;
+    asm("POP");
     
     interruptions_off();
     
@@ -84,7 +84,7 @@ void dispatcher()
     
     refresh_delay_list();
     
-    task_running = default_scheduler();
+    run_queue.task_running = default_scheduler();
     
     restore_context(current_task);
     
