@@ -9,7 +9,6 @@
 #include "hardware.h"
 
 task_queue_t run_queue;
-task_delay_list_t delay_list;
 
 void configure_kernel()
 {
@@ -70,7 +69,8 @@ void task_create(TASK_P routine, unsigned id, unsigned priority)
 void start_scheduling()
 {
     run_queue.task_running = IDLE;
-    restore_context(current_task);
+    restore_context();
+    start_tick_counter();
     interruptions_on();
 }
 
@@ -80,13 +80,30 @@ void dispatcher()
     
     interruptions_off();
     
-    save_context(current_task);
+    save_context();
+    
+    increment_tick_counter();
     
     refresh_delay_list();
     
     run_queue.task_running = default_scheduler();
     
-    restore_context(current_task);
+    restore_context();
+    
+    interruptions_on();
+}
+
+void yield()
+{
+    asm("POP");
+    
+    interruptions_off();
+    
+    save_context();
+    
+    run_queue.task_running = default_scheduler();
+    
+    restore_context();
     
     interruptions_on();
 }

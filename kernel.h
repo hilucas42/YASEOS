@@ -20,7 +20,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Inicializa o sistema operacional
+ * Inicializa as estruturas de dados do sistema operacional
  */
 void configure_kernel();
 
@@ -38,13 +38,21 @@ void task_create(TASK_P routine, unsigned id, unsigned priority);
 void start_scheduling();
 
 /**
- * O despachante do sistema operacional, responsavel por fazer o salvamento e
- * restauracao do contexto das tarefas e chamar o scheduler
+ * ISR do timer contador de ticks. Responsavel por chamar a rotina de incremento
+ * do contador de ticks do sistema operacional e atualizar a lista de tarefas
+ * bloqueadas. Realiza troca de contexto ao chamar o escalonador.
  */
 void dispatcher();
 
 /**
- * A tarefa do tempo ocioso do sistema
+ * Permite a tarefa liberar o hardware para o sistema operacional. Realiza troca
+ * de contexto ao chamar o escalonador.
+ */
+void yield();
+
+/**
+ * A tarefa do tempo ocioso do sistema, ocupa o hardware enquanto nao ha nenhuma
+ * tarfa em execucao.
  */
 TASK idle();
 
@@ -55,10 +63,15 @@ TASK idle();
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Incrementa o contador de ticks do sistema operacional.
+ */
+void increment_tick_counter();
+
+/**
  * Rotina de bloqueio de tarefas baseado em tempo
  * @param ms o periodo de bloqueio em milissegundos
  */
-void delay(unsigned ms);
+void delay(unsigned ticks);
 
 /**
  * Roda a cada troca de contexto, atualizando os tempos de wake-up das tarefas,

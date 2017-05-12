@@ -15,6 +15,11 @@
 #define interruptions_on()  INTCONbits.GIE  = 1;
 
 /**
+ * Inicia o timer de referencia do contador de ticks do sistema operacional
+ */
+void start_tick_counter();
+
+/**
  * Configura os componentes de hardware. Basicamente vai chamar outras funcoes
  * e rotinas que irao efetivamente fazer os ajustes necessarios
  */
