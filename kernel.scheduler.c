@@ -13,11 +13,11 @@ extern task_queue_t run_queue;
 
 _list_index round_robin_sc()
 {
-    _list_index next_task;
+    _list_index next_task = run_queue.task_running;
     
     do
     {
-        next_task = (run_queue.task_running + 1) % run_queue.installed_tasks;
+        next_task = next_task == run_queue.installed_tasks ? 0 : next_task + 1;
     } while(run_queue.task_list[next_task].state != RUNNING);
     
     return next_task;
