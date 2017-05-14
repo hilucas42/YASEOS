@@ -22,7 +22,7 @@
     T0CONbits.T08BIT    = 1;    /* Configura como um timer de 8 bits         */\
     T0CONbits.T0CS      = 0;    /* Fonte de clock como o ciclo de instrucao  */\
     T0CONbits.PSA       = 0;    /* Ativa o prescaler                         */\
-    T0CONbits.T0PS      = 0b111;/* Define o valor do prescaler para 1:256    */
+    T0CONbits.T0PS      = PSTT; /* Define o valor do prescaler para 1:256    */
 
 void start_tick_counter()
 {

@@ -26,9 +26,10 @@ void increment_tick_counter()
  */
 void delay(unsigned ticks)
 {
+    ticks += system_tick_counter;
     delay_list.list[delay_list.list_size].task_index = run_queue.task_running;
-    delay_list.list[delay_list.list_size].wake_up_at = system_tick_counter + ticks;
-    delay_list.list[delay_list.list_size].overflowed = STATUSbits.OV;
+    delay_list.list[delay_list.list_size].wake_up_at = ticks;
+    delay_list.list[delay_list.list_size].overflowed = ticks < system_tick_counter;
     delay_list.list_size++;
     
     run_queue.task_list[run_queue.task_running].state = WAITING;
@@ -47,6 +48,11 @@ void delay(unsigned ticks)
 void refresh_delay_list()
 {
     int i, j;
+    
+    if(system_tick_counter == 0)
+        for(j = 0; j < delay_list.list_size; j++)
+            delay_list.list[j].overflowed   = 0;
+    
     for(i = 0, j = 0; j < delay_list.list_size; j++)
     {
         if((delay_list.list[j].wake_up_at <= system_tick_counter)
@@ -56,13 +62,10 @@ void refresh_delay_list()
                 delay_list.list[i] = delay_list.list[j];
             i++;
         }
-        else if(delay_list.list[j].overflowed)
-        {
-            delay_list.list[j].overflowed   = 0;
-            i++;
-        }
-        else
+        else if(!delay_list.list[j].overflowed)
             run_queue.task_list[delay_list.list[j].task_index].state = RUNNING;
+        else
+            i++;
     }
     delay_list.list_size -= (j-i);
 }
