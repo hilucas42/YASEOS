@@ -28,7 +28,7 @@
  /* Tick timer Prescaler pode receber valores de 0 a 7. O periodo do tick em ms
   * e dado pela equacao P = 256*2^(PSTT+1)*4000/_XTAL_FREQ e o periodo maximo
   * de delay e D = P*65.536-1 ms */
-#define PSTT            5
+#define TTPS            5
 
  /* Escalonador a ser utilizado Round Robin - Comentar para usar prioridades  */
 #define RR

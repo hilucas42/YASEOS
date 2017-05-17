@@ -10,7 +10,8 @@
 
 #include <xc.h>
 #include <p18f4520.h>
-
+#include <pic18f4520.h>
+#include "hardware.h"
 #include "types.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,10 +69,16 @@ TASK idle();
 void increment_tick_counter();
 
 /**
- * Rotina de bloqueio de tarefas baseado em tempo
- * @param ms o periodo de bloqueio em milissegundos
+ * Rotina de bloqueio de tarefas baseado em ticks do sistema operacional
+ * @param ticks o periodo de bloqueio em ticks
  */
 void delay(unsigned ticks);
+
+/**
+ * Macro para bloqueio de tarefas baseado em tempo, arredonda o tempo para ticks
+ * @param ms o periodo de bloqueio em milissegundos
+ */
+#define delay_ms(ms) delay((unsigned)((ms)*(7812500.0/(_XTAL_FREQ*(1<<TTPS)))))
 
 /**
  * Roda a cada troca de contexto, atualizando os tempos de wake-up das tarefas,
@@ -105,7 +112,7 @@ _list_index priority_sc();
 
 #define default_scheduler() priority_sc()
 
-#endif
+#endif  /* RR */
 
 #endif	/* KERNEL_H */
 

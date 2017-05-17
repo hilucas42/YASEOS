@@ -6,7 +6,6 @@
  */
 
 #include "kernel.h"
-#include "hardware.h"
 
 task_queue_t run_queue;
 
