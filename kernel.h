@@ -52,6 +52,14 @@ void dispatcher();
 void yield();
 
 /**
+ * Encerra a tarefa em execucao, definindo estado de bloqueio nao interruptivel
+ */
+#ifdef exit
+#undef exit
+#endif
+void exit();
+
+/**
  * A tarefa do tempo ocioso do sistema, ocupa o hardware enquanto nao ha nenhuma
  * tarfa em execucao.
  */
@@ -113,6 +121,30 @@ _list_index priority_sc();
 #define default_scheduler() priority_sc()
 
 #endif  /* RR */
+
+///////////////////////////////////////////////////////////////////////////////
+/// kernel.scheduler.c                                                      ///
+///////////////////////////////////////////////////////////////////////////////
+/// Escalonadores de tarefas do sistema operacional                         ///
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Inicializa a heap. Documentacao completa na implementacao.
+ */
+void SRAMInitHeap(void);
+
+/**
+ * Alocacao dinamica de memoria. Documentacao completa na implementacao.
+ * @param nBytes o numero de bytes a serem alocados
+ * @return um ponteiro para o espaco de memoria alocado ou nulo em caso de falha
+ */
+unsigned char * NEAR SRAMalloc(NEAR unsigned char nBytes);
+
+/**
+ * Libera memoria previamente alocada. Documentacao completa na implementacao.
+ * @param pSRAM o ponteiro para a memoria a ser liberada
+ */
+void SRAMfree(unsigned char * NEAR pSRAM);
 
 #endif	/* KERNEL_H */
 

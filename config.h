@@ -33,8 +33,15 @@
  /* Escalonador a ser utilizado Round Robin - Comentar para usar prioridades  */
 #define RR
 
- /* Tamanho da memória HEAP (Precisa ser multiplo de 8) em bytes */
-#define HEAP_SIZE       512
+ /* Tamanho da memória HEAP em bytes */
+#define	MAX_HEAP_SIZE		0x200
+
+ /* Caso desejar usar o modificador near defe-se definir NEAR_MODEL antes  */
+#if defined(NEAR_MODEL)
+#define	NEAR	near
+#else
+#define NEAR
+#endif
 
 #endif	/* CONFIG_H */
 

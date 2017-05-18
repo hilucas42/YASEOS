@@ -11,6 +11,7 @@ task_queue_t run_queue;
 
 void configure_kernel()
 {
+    SRAMInitHeap();
     run_queue.installed_tasks = 0;
     task_create(idle, 0, 1);
 }
@@ -105,6 +106,15 @@ void yield()
     restore_context();
     
     interruptions_on();
+}
+
+#ifdef exit
+#undef exit
+#endif
+void exit()
+{
+    current_task.state = STOPPED;
+    yield();
 }
 
 TASK idle()
