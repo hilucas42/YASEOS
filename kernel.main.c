@@ -71,14 +71,14 @@ void start_scheduling()
     run_queue.task_running = IDLE;
     restore_context();
     start_tick_counter();
-    interruptions_on();
+    ei();
 }
 
 void dispatcher()
 {
     asm("POP");
     
-    interruptions_off();
+    di();
     
     save_context();
     
@@ -90,14 +90,14 @@ void dispatcher()
     
     restore_context();
     
-    interruptions_on();
+    ei();
 }
 
 void yield()
 {
     asm("POP");
     
-    interruptions_off();
+    di();
     
     save_context();
     
@@ -105,7 +105,7 @@ void yield()
     
     restore_context();
     
-    interruptions_on();
+    ei();
 }
 
 #ifdef exit

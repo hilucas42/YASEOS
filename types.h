@@ -83,3 +83,21 @@ typedef struct
 } task_delay_list_t;
 #endif	/* TYPES_H */
 
+/**
+ * Cada um dos elementos da fila de tarefas no semaforo
+ */
+typedef struct sem_queue
+{
+    _list_index task_index;
+    struct sem_queue *prox;
+} sem_queue_t;
+
+/**
+ * Semaforo, com seu contador e ponteiros para first e last de sua fila
+ */
+typedef struct
+{
+    sem_queue_t *inicio_fila,
+                *final_fila;
+    byte cont;
+} sem_t;

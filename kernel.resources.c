@@ -9,6 +9,10 @@
 
 extern task_queue_t run_queue;
 
+  //////////////////////////////////////////////////////////////////////////////
+ // Delay and tick counter features                                          //
+//////////////////////////////////////////////////////////////////////////////
+
 task_delay_list_t delay_list;
 unsigned system_tick_counter;
 
@@ -62,4 +66,104 @@ void refresh_delay_list()
             run_queue.task_list[delay_list.list[j].task_index].state = RUNNING;
     }
     delay_list.list_size -= (j-i);
+}
+
+
+  //////////////////////////////////////////////////////////////////////////////
+ // Semaphore features - queue features by Frankeinstein                     //
+//////////////////////////////////////////////////////////////////////////////
+
+ /* Cabecalho das funcoes de uso interno */
+void insere_na_fila_sem(sem_t *sem, sem_queue_t * elemento);
+void retira_da_fila_sem(sem_t *sem);
+sem_queue_t *cria_elemento_sem(_list_index index);
+
+void insere_na_fila_sem(sem_t *sem, sem_queue_t * elemento)
+{
+    if(sem->inicio_fila)
+        sem->final_fila->prox = elemento;
+    else
+        sem->inicio_fila = elemento;
+    sem->final_fila = elemento;
+}
+
+void retira_da_fila_sem(sem_t *sem)
+{
+    sem_queue_t *aux = sem->inicio_fila;
+
+    if(sem->inicio_fila != sem->final_fila)
+        sem->inicio_fila = sem->inicio_fila->prox;
+    else
+        sem->inicio_fila = sem->final_fila = 0x00;
+
+    SRAMfree((byte*)aux);
+}
+
+sem_queue_t *cria_elemento_sem(_list_index index)
+{
+    sem_queue_t *novo = (sem_queue_t *)SRAMalloc((byte)sizeof(sem_queue_t));
+
+    novo->task_index = index;
+    novo->prox = 0x00;
+
+    return novo;
+}
+
+sem_t *createSem(byte cont)
+{
+    sem_t *novo = (sem_t*)SRAMalloc((byte)sizeof(sem_t));
+
+    novo->cont = cont;
+    novo->inicio_fila = novo->final_fila = 0x00;
+
+    return novo;
+}
+
+void semWait(sem_t *s)
+{
+    di();
+    
+    if(s->cont == 0)
+    {
+        insere_na_fila_sem(s, cria_elemento_sem(run_queue.task_running));
+
+        current_task.state = WAITING;
+
+        yield();
+    }
+    else
+        s->cont--;
+    
+    ei();
+}
+
+byte semTryWait(sem_t *s)
+{
+    di();
+    
+    if(s->cont == 0)
+    {
+        ei();
+        return 0;
+    }
+    
+    s->cont--;
+    ei();
+    return 1;
+}
+
+void semPost(sem_t *s)
+{
+    di();
+
+    if(s->inicio_fila)
+    {
+        run_queue.task_list[s->inicio_fila->task_index].state = RUNNING;
+
+        retira_da_fila_sem(s);
+    }
+    else
+        s->cont++;
+    
+    yield();
 }

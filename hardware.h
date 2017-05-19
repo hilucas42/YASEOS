@@ -9,12 +9,6 @@
 #define	HARDWARE_H
 
 /**
- * Macros para controle de interrupcoes por rotinas sensiveis do kernel
- */
-#define interruptions_off() INTCONbits.GIE  = 0;
-#define interruptions_on()  INTCONbits.GIE  = 1;
-
-/**
  * Inicia o timer de referencia do contador de ticks do sistema operacional
  */
 void start_tick_counter();

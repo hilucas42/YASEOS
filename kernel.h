@@ -61,7 +61,7 @@ void exit();
 
 /**
  * A tarefa do tempo ocioso do sistema, ocupa o hardware enquanto nao ha nenhuma
- * tarfa em execucao.
+ * tarefa em execucao.
  */
 TASK idle();
 
@@ -94,6 +94,33 @@ void delay(unsigned ticks);
  */
 void refresh_delay_list();
 
+/**
+ * Cria um novo semaforo permitindo que cont aquisicoes mantenham estado de
+ * desbloqueio simultaneamente
+ * @param cont o contador do semaforo
+ */
+sem_t *createSem(byte cont);
+
+/**
+ * Decrementador. Faz a aquisicao do semaforo cuja referencia e passada como
+ * argumento
+ * @param s endereco do semaforo a adquirir
+ */
+void semWait(sem_t *s);
+
+/**
+ * Similar ao decrementador, faz a aquisicao apenas se o semaforo nao estiver
+ * saturado. Retorna 1 em caso de sucesso ou 0 em caso de falha.
+ * @param s endereco do semaforo a testar/adquirir
+ */
+byte semTryWait(sem_t *s);
+
+/**
+ * Incrementador. Libera o semaforo cuja referencia e passada como argumento
+ * @param s endereco do semaforo a liberar
+ */
+void semPost(sem_t *s);
+
 ///////////////////////////////////////////////////////////////////////////////
 /// kernel.scheduler.c                                                      ///
 ///////////////////////////////////////////////////////////////////////////////
@@ -123,9 +150,9 @@ _list_index priority_sc();
 #endif  /* RR */
 
 ///////////////////////////////////////////////////////////////////////////////
-/// kernel.scheduler.c                                                      ///
+/// kernel.sralloc.c                                                        ///
 ///////////////////////////////////////////////////////////////////////////////
-/// Escalonadores de tarefas do sistema operacional                         ///
+/// Alocacao dinamica de memoria (Microchip)                                ///
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
