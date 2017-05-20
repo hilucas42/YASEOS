@@ -167,3 +167,82 @@ void semPost(sem_t *s)
     
     yield();
 }
+
+
+  //////////////////////////////////////////////////////////////////////////////
+ // Interprocess communication - shared memory feature                       //
+//////////////////////////////////////////////////////////////////////////////
+
+void *shm_add(byte key, byte size);
+shm_list_t *shm_find(byte key);
+void shm_del(byte key);
+
+shm_list_t *shm_list;
+
+void *shm_add(byte key, byte size)
+{
+    shm_list_t *new = (shm_list_t*)SRAMalloc(sizeof(shm_list_t));
+    new->key = key;
+    new->uses = 1;
+    new->addr = SRAMalloc(size*sizeof(byte));
+    new->next = shm_list;
+    shm_list = new;
+    return new->addr;
+}
+
+shm_list_t *shm_find(byte key)
+{
+    shm_list_t *tmp;
+    for(tmp = shm_list; tmp; tmp = tmp->next)
+        if(tmp->key == key)
+            break;
+    return tmp;
+}
+
+void shm_del(byte key)
+{
+    shm_list_t *tmp = shm_list;
+    
+    if(tmp)
+    {
+        if(tmp->key == key)
+        {
+            SRAMfree(tmp->addr);
+            shm_list = shm_list->next;
+            SRAMfree((byte*)tmp);
+        }
+        else for(; tmp->next; tmp = tmp->next)
+            if(tmp->next->key == key)
+            {
+                shm_list_t *tmp_2 = tmp->next;
+                tmp->next = tmp_2->next;
+                SRAMfree((byte*)tmp_2->addr);
+                SRAMfree((byte*)tmp_2);
+            }
+    }
+}
+
+void* shm_get(byte key, byte size)
+{
+    di();
+    shm_list_t *shm = shm_find(key);
+    
+    if(shm)
+    {
+        shm->uses++;
+        return shm->addr;
+    }
+    
+    shm = (shm_list_t*)shm_add(key, size);
+    ei();
+    return (void*)shm;
+}
+
+void shm_release(byte key)
+{
+    shm_list_t *shm = shm_find(key);
+    
+    if(shm)
+        if(--shm->uses == 0)
+            shm_del(key);
+}

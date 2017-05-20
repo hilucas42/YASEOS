@@ -101,3 +101,14 @@ typedef struct
                 *final_fila;
     byte cont;
 } sem_t;
+
+/**
+ * Cada um dos elementos da lista de memorias compartilhadas
+ */
+typedef struct shm_list
+{
+    byte key;
+    byte uses;
+    void *addr;
+    struct shm_list *next;
+} shm_list_t;

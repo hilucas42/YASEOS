@@ -173,5 +173,20 @@ unsigned char * NEAR SRAMalloc(NEAR unsigned char nBytes);
  */
 void SRAMfree(unsigned char * NEAR pSRAM);
 
+/**
+ * Obtem um espaco de memoria compartilhado
+ * @param key o identificador do espaco de memoria
+ * @param size o tamanho a ser alocado caso nao exista
+ * @return o endereco do espaco de memoria
+ */
+void* shm_get(byte key, byte size);
+
+/**
+ * Libera a memoria compartilhada. O espaco apenas e liberado por completo
+ * quando todas as tarefas que o obtiveram o liberarem.
+ * @param key
+ */
+void shm_release(byte key);
+
 #endif	/* KERNEL_H */
 
