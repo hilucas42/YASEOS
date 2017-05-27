@@ -127,7 +127,7 @@ void semPost(sem_t *s);
 /// Escalonadores de tarefas do sistema operacional                         ///
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef RR
+#ifndef ENABLE_PRIORITY
 
 /**
  * Escalonador circular baseado em quantum

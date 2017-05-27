@@ -30,8 +30,8 @@
   * de delay e D = P*65.536-1 ms */
 #define TTPS            5
 
- /* Escalonador a ser utilizado Round Robin - Comentar para usar prioridades  */
-#define RR
+ /* Habilitar o escalonador baseado em prioridades em vez do RoundRobin */
+#define ENABLE_PRIORITY
 
  /* Tamanho da memória HEAP em bytes */
 #define	MAX_HEAP_SIZE		0x200
